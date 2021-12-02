@@ -5,6 +5,19 @@ const fs = require("fs");
 const input = fs
   .readFileSync("./input.txt", "latin1")
   .split(/[(\r\n)(,)]/g)
-  .map(Number); // maybe not necessary
+  .map((a) => a.split(" "));
 
-// console.log(answer);
+let x = 0;
+let y = 0;
+
+input.forEach((b) => {
+  if (b[0] === "forward") {
+    x += parseInt(b[1]);
+  } else if (b[0] === "down") {
+    y += parseInt(b[1]);
+  } else {
+    y -= parseInt(b[1]);
+  }
+});
+
+console.log(x * y);
