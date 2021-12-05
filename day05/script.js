@@ -1,4 +1,4 @@
-// Advent Of Code 2021 - Day #: Part #
+// Advent Of Code 2021 - Day #: Part 1
 const fs = require("fs");
 
 // import my puzzle input and format it into an array of numbers

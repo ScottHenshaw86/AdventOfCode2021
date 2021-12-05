@@ -1,0 +1,63 @@
+// Advent Of Code 2021 - Day 3: Part 1
+const fs = require("fs");
+
+// import my puzzle input and format it into an array of numbers
+const input = fs.readFileSync("./input.txt", "latin1").split(/[(\r\n)(,)]/g);
+
+const newInput = input.map((a) => a.split(""));
+
+let ogr = "";
+let csr = "";
+
+const getOGR = (arr, i) => {
+  if (ogr.length === arr[0].length) {
+    console.log("RETURN");
+    console.log(ogr);
+    return ogr;
+  } else {
+    const c = arr[0].length;
+    let total = 0;
+    for (let j = 0; j < arr.length; j++) {
+      total += parseInt(arr[j][i]);
+    }
+    if (total < arr.length / 2) {
+      ogr = ogr + "0";
+    } else {
+      ogr = ogr + "1";
+    }
+    const ogrArr = arr.filter((a) => a.substr(0, i + 1) === ogr);
+    getOGR(ogrArr, i + 1);
+  }
+};
+const getCSR = (arr, i) => {
+  if (csr.length === arr[0].length) {
+    console.log("RETURN");
+    console.log(csr);
+    return csr;
+  } else {
+    const c = arr[0].length;
+    let total = 0;
+    for (let j = 0; j < arr.length; j++) {
+      total += parseInt(arr[j][i]);
+    }
+    if (total < arr.length / 2) {
+      csr = csr + "1";
+    } else {
+      csr = csr + "0";
+    }
+    const csrArr = arr.filter((a) => a.substr(0, i + 1) === csr);
+    if (csrArr.length === 0) {
+      csr = arr[0];
+      return;
+    }
+    getCSR(csrArr, i + 1);
+  }
+};
+
+getOGR(input, 0);
+getCSR(input, 0);
+
+console.log(ogr);
+console.log(csr);
+
+console.log(parseInt(ogr, 2) * parseInt(csr, 2));
