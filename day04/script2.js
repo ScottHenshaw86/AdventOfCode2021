@@ -1,5 +1,4 @@
 // Advent Of Code 2021 - Day 4: Part 1
-const { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } = require("constants");
 const fs = require("fs");
 
 const input = fs
