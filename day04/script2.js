@@ -1,4 +1,4 @@
-// Advent Of Code 2021 - Day 4: Part 1
+// Advent Of Code 2021 - Day 4: Part 2
 const fs = require("fs");
 
 // import and process data into usable format

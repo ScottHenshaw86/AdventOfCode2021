@@ -51,7 +51,7 @@ for (let i = 0; i < boards.length; i++) {
 let winRound = 9999999; // to find the lowest round that has a winning board.
 let winner = 0; // to store the index of the winning board
 
-// these are all of possible ways to win
+// these are all the possible ways to win
 const row1 = [0, 1, 2, 3, 4];
 const row2 = [5, 6, 7, 8, 9];
 const row3 = [10, 11, 12, 13, 14];
