@@ -7,6 +7,8 @@ const input = fs
   .split(/[(\r\n)(,)]/g)
   .map((a) => a.split(" "));
 
+console.log(input);
+
 let x = 0;
 let y = 0;
 

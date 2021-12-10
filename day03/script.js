@@ -4,8 +4,10 @@ const fs = require("fs");
 // import my puzzle input and format it into an array of numbers
 const input = fs
   .readFileSync("./input.txt", "latin1")
-  .split(/[(\r\n)(,)]/g)
+  .split(/[(\r\n)]/g)
   .map((a) => a.split(""));
+
+// console.log(input);
 
 const rotate = (arr) => {
   const c = arr.length;
@@ -17,6 +19,7 @@ const rotate = (arr) => {
       newArr[j].push(arr[i][j]);
     }
   }
+  // console.log(newArr);
   return newArr;
 };
 
