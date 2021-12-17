@@ -13,4 +13,5 @@ input.forEach((n, i) => {
   if (n > input[i - 1]) count++;
 });
 
+console.log("ANSWER!!");
 console.log(count);

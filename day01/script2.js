@@ -3,7 +3,7 @@ const fs = require("fs");
 
 // import my puzzle input and format it into an array of numbers
 const input = fs
-  .readFileSync("./sample.txt", "latin1")
+  .readFileSync("./input.txt", "latin1")
   .split(/[(\r\n)(,)]/g)
   .map(Number);
 

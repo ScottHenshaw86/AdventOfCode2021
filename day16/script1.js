@@ -1,18 +1,7 @@
-// Advent Of Code 2021 - Day 16: Part 2
-
+// Advent Of Code 2021 - Day 16: Part 1
 const fs = require("fs");
 
 let binary = fs.readFileSync("./input.txt", "latin1");
-
-// let binary = "D2FE28";
-// let binary = "C200B40A82";
-// let binary = '04005AC33890'
-// let binary = '880086C3E88112'
-// let binary = 'CE00C43D881120'
-// let binary = 'D8005AC2A8F0'
-// let binary = 'F600BC2D8F'
-// let binary = '9C005AC2F8F0'
-// let binary = '9C0141080250320F1802104A08'
 
 const binaryMap = {
   0: "0000",
@@ -40,42 +29,32 @@ arr.forEach((a) => {
   binary = binary.replace(regex, binaryMap[a]);
 });
 
-let depth = 0;
-let length = [];
-let numSub = [];
-
-const packets = [];
-const typeIDs = [];
+const versions = [];
 
 const c = binary.length;
 for (let i = 0; i < c; ) {
   if (!binary.slice(i).includes(1)) break;
   const V = binary.substring(i, i + 3);
+  versions.push(V);
 
   const T = binary.substring(i + 3, i + 6);
-  typeIDs.push(parseInt(T, 2));
   if (parseInt(T, 2) == 4) {
     let j = i + 6;
     while (binary[j] != 0) {
       j += 5;
     }
-    packets.push(binary.slice(i, j + 5));
     i = j + 5;
     continue;
   } else {
     if (binary[i + 6] == 0) {
-      packets.push(binary.slice(i, i + 22));
       i += 22;
     } else {
-      packets.push(binary.slice(i, i + 18));
       i += 18;
     }
   }
 }
 
-for (let i = 0; i < 20; i++) {
-  console.log(`TypeID: ${typeIDs[i]}`);
-  console.log(`packet: ${packets[i]}`);
-}
+let count = 0;
+versions.forEach((a) => (count += parseInt(a, 2)));
 
-console.log(parseInt("1010010111000", 2));
+console.log(count);
