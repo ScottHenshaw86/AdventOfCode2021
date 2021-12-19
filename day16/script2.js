@@ -40,12 +40,13 @@ arr.forEach((a) => {
   binary = binary.replace(regex, binaryMap[a]);
 });
 
-let depth = 0;
-let length = [];
-let numSub = [];
+console.log(binary)
 
 const packets = [];
 const typeIDs = [];
+const values = [];
+const I = [];
+const L = [];
 
 const c = binary.length;
 for (let i = 0; i < c; ) {
@@ -56,26 +57,39 @@ for (let i = 0; i < c; ) {
   typeIDs.push(parseInt(T, 2));
   if (parseInt(T, 2) == 4) {
     let j = i + 6;
+    let value = [];
     while (binary[j] != 0) {
+      value.push(binary.substring(j+1, j+5))
       j += 5;
     }
+    value.push(binary.substring(j+1, j+5))
     packets.push(binary.slice(i, j + 5));
+    values.push(parseInt(value.join(""),2));
     i = j + 5;
+    I.push('X')
+    L.push('X')
     continue;
   } else {
     if (binary[i + 6] == 0) {
       packets.push(binary.slice(i, i + 22));
+      I.push(0)
+      L.push(parseInt(binary.substring(i+7, i+22), 2))
       i += 22;
     } else {
       packets.push(binary.slice(i, i + 18));
+      I.push(1)
+      L.push(parseInt(binary.substring(i+7, i+18), 2))
       i += 18;
     }
+    values.push('?');
   }
 }
 
-for (let i = 0; i < 20; i++) {
-  console.log(`TypeID: ${typeIDs[i]}`);
+for (let i = 0; i < packets.length; i++) {
+  console.log(`========== ${i} ===========`)
   console.log(`packet: ${packets[i]}`);
+  console.log(`TypeID: ${typeIDs[i]}`);
+  console.log(`I: ${I[i]}`)
+  console.log(`L: ${L[i]}`)
+  console.log(`Value: ${values[i]}`)
 }
-
-console.log(parseInt("1010010111000", 2));
