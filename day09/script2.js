@@ -6,20 +6,20 @@ const input = fs
   .readFileSync("./input.txt", "latin1")
   .split(/\r\n/g)
   
-// input looks like this
+// console.log(input);
 // const input = [
 //   '2199943210',
 //   '3987894921',
 //   '9856789892',
 //   '8767896789',
 //   '9899965678'
-// ]
+// ];
 
 const c = input.length;
 const d = input[0].length;
 
 const basins = [];
-let basinArr = []
+let basinArr = [];
 
 const checkNeighbors = (i, j) => {
   if (!input[i]?.[j]) return;
