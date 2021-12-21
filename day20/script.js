@@ -2,10 +2,9 @@
 const fs = require("fs");
 
 // import my puzzle input and format it into an array of numbers
-const input = fs.readFileSync("./input.txt", "latin1").split("\n");
+const input = fs.readFileSync("./sample.txt", "latin1").split("\n");
 
 const algo = input.shift();
-// console.log(algo);
 input.shift(); // remove empty element
 
 let c = input.length;
@@ -14,7 +13,9 @@ const tempStr = ".".repeat(c + 20);
 
 for (let i = 0; i < c; i++) {
   input[i] = `..........${input[i]}..........`;
+  input[i] = input[i].replace('\r', "");
 }
+
 
 input.unshift(tempStr);
 input.unshift(tempStr);
@@ -36,19 +37,24 @@ input.push(tempStr);
 input.push(tempStr);
 input.push(tempStr);
 input.push(tempStr);
+
+// console.log(input)
 
 let enhancedImage = [];
 
 const analyzePixel = (i, j, arr) => {
-  const upLeft = arr[i - 1]?.[j - 1] ? arr[i - 1][j - 1] : ".";
-  const up = arr[i - 1]?.[j] ? arr[i - 1][j] : ".";
-  const upRight = arr[i - 1]?.[j + 1] ? arr[i - 1][j + 1] : ".";
-  const left = arr[i][j - 1] ? arr[i][j - 1] : ".";
-  const current = arr[i][j];
-  const right = arr[i][j + 1] ? arr[i][j + 1] : ".";
-  const downLeft = arr[i + 1]?.[j - 1] ? arr[i + 1][j - 1] : ".";
-  const down = arr[i + 1]?.[j] ? arr[i + 1][j] : ".";
-  const downRight = arr[i + 1]?.[j + 1] ? arr[i + 1][j + 1] : ".";
+
+  if ( i -1 < 0 || i + 1 >= input.length || j - 1 < 0 || j + 1 >= input.length ) return '.'
+
+  const upLeft = arr[i - 1][j - 1]
+  const up = arr[i - 1][j]
+  const upRight = arr[i - 1][j + 1]
+  const left = arr[i][j - 1]
+  const current = arr[i][j]
+  const right = arr[i][j + 1]
+  const downLeft = arr[i + 1][j - 1]
+  const down = arr[i + 1][j]
+  const downRight = arr[i + 1][j + 1]
   let total = `${upLeft}${up}${upRight}${left}${current}${right}${downLeft}${down}${downRight}`;
   total = total.replace(/\./g, "0");
   total = total.replace(/#/g, "1");
@@ -67,6 +73,7 @@ for (let i = 0; i < d; i++) {
 }
 
 enhancedImage = enhancedImage.map((a) => a.join(""));
+// console.log(enhancedImage)
 
 let doublyEnhancedImage = [];
 
@@ -80,7 +87,29 @@ for (let i = 0; i < d; i++) {
   }
 }
 
-console.log(doublyEnhancedImage);
+doublyEnhancedImage.shift()
+doublyEnhancedImage.shift()
+doublyEnhancedImage.shift()
+doublyEnhancedImage.shift()
+doublyEnhancedImage.shift()
+doublyEnhancedImage.pop()
+doublyEnhancedImage.pop()
+doublyEnhancedImage.pop()
+doublyEnhancedImage.pop()
+doublyEnhancedImage.pop()
+
+for (let i=0; i<doublyEnhancedImage.length; i++ ) {
+  doublyEnhancedImage[i].shift()
+  doublyEnhancedImage[i].shift()
+  doublyEnhancedImage[i].shift()
+  doublyEnhancedImage[i].shift()
+  doublyEnhancedImage[i].shift()
+  doublyEnhancedImage[i].pop()
+  doublyEnhancedImage[i].pop()
+  doublyEnhancedImage[i].pop()
+  doublyEnhancedImage[i].pop()
+  doublyEnhancedImage[i].pop()
+}
 
 let count = 0;
 let e = doublyEnhancedImage.length;
@@ -91,5 +120,9 @@ for (let i = 0; i < e; i++) {
     }
   }
 }
+
+doublyEnhancedImage = doublyEnhancedImage.map((a) => a.join(""));
+console.log(doublyEnhancedImage)
+
 
 console.log(count);
