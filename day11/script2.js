@@ -6,21 +6,13 @@ const input = fs
   .readFileSync("./input.txt", "latin1")
   .split(/\n/g)
   .map((a) => {
-    return a.split("").map((d) => parseInt(d));
-  }); // maybe not necessary
-
-// remove junk (\r) at end of lines
-for (let i = 0; i < input.length; i++) {
-  if (input[i].length > input[input.length - 1].length) {
-    input[i].pop();
-  }
-}
+    return a.trim().split("").map((d) => parseInt(d));
+  });
 
 let count = 0;
 
+// exactly same as Part 1
 const checkNeighbors = (i, j) => {
-  let flashes = false;
-  if (!input[i]?.[j]) return;
   input[i][j] = 0;
   count++;
   const neighbors = [
@@ -33,26 +25,22 @@ const checkNeighbors = (i, j) => {
     { i: i + 1, j: j },
     { i: i + 1, j: j + 1 },
   ]
-  for (let i = 0; i < neighbors.length; i++) {
-    const a = neighbors[i];
+  for (let k = 0; k < neighbors.length; k++) {
+    const a = neighbors[k];
     if (!input[a.i]?.[a.j]) continue;
     let octopus = input[a.i][a.j]
     if (octopus === 0) continue;
+    input[a.i][a.j]++;
     if (octopus > 8) {
-      flashes = true;
       checkNeighbors(a.i, a.j);
-    } else {
-      input[a.i][a.j]++;
-    }
+    } 
   }
-  return flashes;
 }
 
-let answer = 0;
-
+// lines 41 to 56 are ALMOST same as Part 1
 const c = input[0].length;
-for (let step = 0; step < 5000; step++) {
-  count = 0;
+for (let step = 1;; step++) { // no longer need to loop a specific number of times
+  count = 0; // new for part 2. Reset counter to 0 after each step 
   for (let i = 0; i < c; i++) {
     for (let j = 0; j < c; j++) {
       input[i][j] = input[i][j] + 1;
@@ -62,16 +50,15 @@ for (let step = 0; step < 5000; step++) {
   for (let i = 0; i < c; i++) {
     for (let j = 0; j < c; j++) {
       if (input[i][j] > 9) {
-        ongoing = checkNeighbors(i, j);
-        console.log(ongoing);
+        checkNeighbors(i, j);
       }
     }
   }
 
+  // if count is 100, that means all dumbo octopuses flashed during this step!
+  // so I just need to log the current step
   if (count === 100) {
-    answer = step + 1;
+    console.log(step)
     break;
   }
 }
-
-console.log(answer)
