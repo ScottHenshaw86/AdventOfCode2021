@@ -6,23 +6,27 @@ const input = fs
   .readFileSync("./input.txt", "latin1")
   .split(/\n/g)
   .map((a) => {
-    return a.split("").map((d) => parseInt(d));
-  }); // maybe not necessary
+    return a.trim().split("").map((d) => parseInt(d));
+  });
 
-// remove junk (\r) at end of lines
-for (let i = 0; i < input.length; i++) {
-  if (input[i].length > input[input.length - 1].length) {
-    input[i].pop();
-  }
-}
+// console.log(input)
+// [
+//   [
+//     4, 7, 8, 1, 6,
+//     2, 3, 8, 8, 8
+//   ],
+//   [
+//     1, 7, 8, 4, 1,
+//     5, 6, 1, 1, 4
+//   ],
+//   (... 8 more items)
+// ]
 
-let count = 0;
+let count = 0; // initialize a counter to track # of flashes
 
 const checkNeighbors = (i, j) => {
-  let flashes = false;
-  if (!input[i]?.[j]) return;
-  input[i][j] = 0;
-  count++;
+  input[i][j] = 0; // set the octopus who flashed to 0
+  count++; // increment counter because an octopus flashed
   const neighbors = [
     { i: i - 1, j: j - 1 },
     { i: i - 1, j: j },
@@ -33,34 +37,30 @@ const checkNeighbors = (i, j) => {
     { i: i + 1, j: j },
     { i: i + 1, j: j + 1 },
   ]
-  for (let i = 0; i < neighbors.length; i++) {
-    const a = neighbors[i];
-    if (!input[a.i]?.[a.j]) continue;
-    let octopus = input[a.i][a.j]
-    if (octopus === 0) continue;
-    if (octopus > 8) {
-      flashes = true;
+  for (let k = 0; k < neighbors.length; k++) { // loop through all neighbors
+    const a = neighbors[k]; // for convenience
+    if (!input[a.i]?.[a.j]) continue; // neighbor doesn't exist
+    let octopus = input[a.i][a.j] // for convenience
+    if (octopus === 0) continue; // octopus just flashed, ignore it
+    input[a.i][a.j]++; // this octopus won't flash yet, so just increment it
+    if (octopus > 8) { // this octopus will flash, so check its neighbors
       checkNeighbors(a.i, a.j);
-    } else {
-      input[a.i][a.j]++;
     }
   }
-  return flashes;
 }
 
 const c = input[0].length;
-for (let step = 0; step < 100; step++) {
-  for (let i = 0; i < c; i++) {
-    for (let j = 0; j < c; j++) {
-      input[i][j] = input[i][j] + 1;
+for (let step = 0; step < 100; step++) { // loop 100 times
+  for (let i = 0; i < c; i++) { // loop through input array
+    for (let j = 0; j < c; j++) { // loop through nested arrays
+      input[i][j] = input[i][j] + 1; // increment each dumbo octopus' counter
     }
   }
 
-  for (let i = 0; i < c; i++) {
-    for (let j = 0; j < c; j++) {
-      if (input[i][j] > 9) {
-        ongoing = checkNeighbors(i, j);
-        console.log(ongoing);
+  for (let i = 0; i < c; i++) { // loop through input array again
+    for (let j = 0; j < c; j++) { // loop through nested array again
+      if (input[i][j] > 9) { // if a counter is above 9, it's going to flash
+        checkNeighbors(i, j); // increment neighbors and check if they will flash, too
       }
     }
   }

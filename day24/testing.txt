@@ -1,0 +1,252 @@
+inp w     a  w = w[1]                           // a
+mul x 0      x = 0
+add x z      x = 0
+mod x 26     x = 0
+div z 1      z = 0
+add x 10     x = 10
+eql x w      x = 0
+eql x 0      x = 1
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 25
+add y 1      y = 26
+mul z y      z = 0
+mul y 0      y = 0
+add y w      y = 9
+add y 0      y = 9
+mul y x      y = 9
+add z y      z = 9  
+inp w     b  w = w[2]                           // b
+mul x 0      x = 0
+add x z      x = 9
+mod x 26     x = 9
+div z 1      z = 9
+add x 12     x = 21
+eql x w      x = 0
+eql x 0      x = 1
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 25
+add y 1      y = 26
+mul z y      z = 234
+mul y 0      y = 0
+add y w      y = 9
+add y 6      y = 15
+mul y x      y = 15
+add z y      z = 249
+inp w     c  w = w[3]                           // c
+mul x 0      x = 0
+add x z      x = 249
+mod x 26     x = 15
+div z 1      z = 249
+add x 13     x = 28
+eql x w      x = 0
+eql x 0      x = 1
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 25
+add y 1      y = 26
+mul z y      z = 6474
+mul y 0      y = 0
+add y w      y = 9
+add y 4      y = 13
+mul y x      y = 13
+add z y      z = 6487
+inp w     d  w = w[4]                           // d
+mul x 0      x = 0
+add x z      x = 6487
+mod x 26     x = 13
+div z 1      z = 6487
+add x 13     x = 26
+eql x w      x = 0
+eql x 0      x = 1
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 25
+add y 1      y = 26
+mul z y      z = 168662
+mul y 0      y = 0
+add y w      y = 9
+add y 2      y = 11
+mul y x      y = 11
+add z y      z = 168673
+inp w     e  w = w[5]                                                               // e
+mul x 0      x = 0
+add x z      x = 168673
+mod x 26     x = 11
+div z 1      z = 168673
+add x 14     x = 27
+eql x w      x = 0
+eql x 0      x = 1
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 25
+add y 1      y = 26
+mul z y      z = 4385498
+mul y 0      y = 0
+add y w      y = e
+add y 9      y = e + 9
+mul y x      y = e + 9
+add z y      z = 4385507 + e
+inp w     f  w = w[6]
+mul x 0      x = x = 0
+add x z      x = 4385507 + e
+mod x 26     x = 9
+div z 26     z = 168673
+add x -2     x = 7
+eql x w      x = 1      !!!                   ////// F = 7 !!!
+eql x 0      x = 0
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 0
+add y 1      y = 1
+mul z y      z = 168673
+mul y 0      y = 0
+add y w      y = 7
+add y 1      y = 8
+mul y x      y = 0
+add z y      z = 168681
+inp w     g  w = w[7]
+mul x 0      x = 0
+add x z      x = 168681
+mod x 26     x = 19
+div z 1      z = 168681
+add x 11     x = 30
+eql x w      x = 0
+eql x 0      x = 1
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 25
+add y 1      y = 26
+mul z y      z = 4385706
+mul y 0      y = 0
+add y w      y = g
+add y 10     y = 10 + g
+mul y x      y = 10 + g
+add z y      z = 4385716 + g
+inp w     h  w = w[8]
+mul x 0      x = 0
+add x z      x = 4385716 + g
+mod x 26     x = 10 + g
+div z 26     z = 168681
+add x -15    x = g - 5
+eql x w      x = 1     !!!                   //////// H = g - 5    (let's try H = 4, G = 9)  !!!
+eql x 0      x = 0
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 0
+add y 1      y = 1
+mul z y      z = 168681
+mul y 0      y = 0
+add y w      y = h
+add y 6      y = h + 6
+mul y x      y = 0
+add z y      z = 168687 + h
+inp w     i  w = w[9]
+mul x 0      x = 0
+add x z      x = 168687 + h
+mod x 26     x = 11 ~ 19
+div z 26     z = ((((((((((4385517+ e + g) / 26) / 26                                                     4385508 or 4395509
+add x -10    x = ? - 10
+eql x w      x = 1    !!!
+eql x 0      x = 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 4
+mul y x
+add z y
+inp w     j  w = w[10]
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 10
+eql x w      x = 0
+eql x 0      x = 1
+mul y 0      y = 0
+add y 25     y = 25
+mul y x      y = 25
+add y 1      y = 26
+mul z y
+mul y 0
+add y w
+add y 6
+mul y x
+add z y
+inp w     k  w = w[11]
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -10
+eql x w      x = 1   !!!
+eql x 0      x = 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 3
+mul y x
+add z y
+inp w     l  w = w[12]
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -4
+eql x w      x = 1   !!!
+eql x 0      x = 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 9
+mul y x
+add z y
+inp w     m  w = w[13]
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -1
+eql x w      x = 1   !!!
+eql x 0      x = 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 15
+mul y x
+add z y
+inp w     n  w = w[14]
+mul x 0
+add x z
+mod x 26 
+div z 26  
+add x -1     x = 1   !!!
+eql x w      x = 0
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 5  
+mul y x  // x must be 0
+add z y  // z and y must be 0, or z muhst be negative and y its positive complement

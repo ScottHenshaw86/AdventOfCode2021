@@ -4,7 +4,7 @@ const fs = require("fs");
 // import my puzzle input and format it into an array of numbers
 const input = fs
   .readFileSync("./sample.txt", "latin1")
-  .split(/--- scanner [0-9] ---\n/g)
+  .split(/--- scanner [0-9] ---\r\n/g)
   .map((a) =>
     a
       .split("\n")
@@ -17,8 +17,8 @@ input.shift();
 
 // console.log(input);
 // [
-//   [
-//     [404, -588, -901],
+//   [ i
+//     [404, -588, -901], j[0][0], j[0][1], j[0][2]
 //     [528, -643, 409],
 //   ],
 //   [
@@ -27,7 +27,7 @@ input.shift();
 //   ],
 // ];
 
-const diffs = [];
+const grid = [];
 
 const c = input.length;
 for (let i = 1; i < 2; i++) {
