@@ -10,14 +10,14 @@ const input = fs
 
 // console.log(input)
 
-const max = 99999999999999; // largest possible 14 digit number
+const max = 99989999999999; // largest possible 14 digit number
 const min = 11111111111111; // smallest possible 14 digit number with no 0s
 
 let count = 0;
 
 const start = performance.now();
 const c = input.length;
-for (let i = max; i >= max - 3000000000; i--) {
+for (let i = max; i >= max - 1; i--) {
   let digit = 0;
   const string = i.toString();
   // console.log(i)
@@ -31,9 +31,13 @@ for (let i = max; i >= max - 3000000000; i--) {
   }
 
 
-  for (let j = 0; j < c; j++) {
+  for (let j = 0; j < c - 200; j++) {
     const operation = input[j][0];
     const a = input[j][1];
+    console.log(`w: ${values.w}`)
+    console.log(`x: ${values.x}`)
+    console.log(`y: ${values.y}`)
+    console.log(`z: ${values.z}`)
 
     if (operation === "inp") {
       values.w = string[digit];
@@ -44,15 +48,15 @@ for (let i = max; i >= max - 3000000000; i--) {
     const b = input[j][2]
 
     if (operation === "add") {
-      values[a] += values[b] ? values[b] : b;
+      values[a] += Object.keys(values).includes(b) ? values[b] : b;
       continue;
     }
     if (operation === "mul") {
-      values[a] *= values[b] ? values[b] : b;
+      values[a] *= Object.keys(values).includes(b) ? values[b] : b;
       continue;
     }
     if (operation === "div") {
-      values[a] = values[b] ? Math.floor(values[a] / values[b]) : Math.floor(values[a] / b);
+      values[a] /= Object.keys(values).includes(b) ? Math.floor(values[a] / values[b]) : Math.floor(values[a] / b);
       continue;
     }
     if (operation === "mod") {
@@ -60,7 +64,7 @@ for (let i = max; i >= max - 3000000000; i--) {
       continue;
     }
     if (operation === "eql") {
-      if (values[a] && values[b]) {
+      if (values[a] && Object.keys(values).includes(b)) {
         values[a] = values[a] === values[b] ? 1 : 0;
       } else {
         values[a] = values[a] === b ? 1 : 0;
