@@ -64,7 +64,7 @@ const foldX = (foldLine) => {
 
 const d = folds.length;
 for (let i = 0; i < folds.length; i++) {
-  // for (let i = 0; i < 1; i++) {
+  // fo part 2, I need to complete all of the folds
   const foldLine = parseInt(folds[i].split("=")[1]);
   if (folds[i].includes("x")) {
     foldX(foldLine);
@@ -73,12 +73,13 @@ for (let i = 0; i < folds.length; i++) {
   }
 }
 
-let count = 0;
+// no longer care about this counter
+// let count = 0;
 
-for (let i = 0; i < paper.length; i++) {
-  for (let j = 0; j < paper[0].length; j++) {
-    if (paper[i][j] === "#") count++;
-  }
-}
+// for (let i = 0; i < paper.length; i++) {
+//   for (let j = 0; j < paper[0].length; j++) {
+//     if (paper[i][j] === "#") count++;
+//   }
+// }
+
 console.log(paper);
-console.log(count);
