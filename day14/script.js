@@ -1,37 +1,16 @@
 // Advent Of Code 2021 - Day 14: Part 1
 const fs = require("fs");
-const { setgroups } = require("process");
 
 // import my puzzle input and format it into an array of numbers
-const input = fs.readFileSync("./input.txt", "latin1").split(/[(\r\n)(,)]/g);
+const input = fs.readFileSync("./input.txt", "latin1").split(/\n/g);
 
-const template = input.shift();
+let polymer = input.shift();
 input.shift();
 const rulesArr = input.map((a) => a.split(" -> "));
-
-// const template = NNCB
-
-// const rulesArr = [
-//   [ 'CH', 'B' ], [ 'HH', 'N' ],
-//   [ 'CB', 'H' ], [ 'NH', 'C' ],
-//   [ 'HB', 'C' ], [ 'HC', 'B' ],
-//   [ 'HN', 'C' ], [ 'NN', 'C' ],
-//   [ 'BH', 'H' ], [ 'NC', 'B' ],
-//   [ 'NB', 'B' ], [ 'BN', 'B' ],
-//   [ 'BB', 'N' ], [ 'BC', 'B' ],
-//   [ 'CC', 'N' ], [ 'CN', 'C' ]
-// ]
-
 const rules = Object.fromEntries(rulesArr);
 
-// console.log(rules);
-
-const STEPS = 10; // 10 for Part 1;
-
-let polymer = template;
-for (let i = 0; i < STEPS; i++) {
-  console.log(i);
-  console.log(polymer.length);
+const STEPS = 10;
+for (let step = 0; step < STEPS; step++) {
   for (let i = 0; i < polymer.length; i++) {
     if (rules[`${polymer[i]}${polymer[i + 1]}`]) {
       polymer =
@@ -41,10 +20,9 @@ for (let i = 0; i < STEPS; i++) {
       i++;
     }
   }
-  // console.log(polymer);
 }
 
-const letters = Object.values(rules);
+const letters = [...new Set(Object.values(rules))];
 
 let min = 999999;
 let max = 0;
@@ -52,7 +30,7 @@ let max = 0;
 const c = letters.length;
 for (let i = 0; i < c; i++) {
   const letterRegex = new RegExp(letters[i], "g");
-  const count = (polymer.match(letterRegex) || []).length;
+  const count = polymer.match(letterRegex).length;
   if (count > 0 && count < min) {
     min = count;
   }

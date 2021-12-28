@@ -9,7 +9,9 @@ const input = fs
     a
       .split("\n")
       .filter((b) => b.length > 0)
-      .map((c) => c.split(",").map(d => parseInt(d) + 1000))
+      .map((c) =>
+        c.split(",").map((d) => Math.round((parseInt(d) + 1000) / 40))
+      )
   );
 input.shift();
 
@@ -28,9 +30,21 @@ input.shift();
 const grid = [];
 
 const c = input.length;
-for (let i = 0; i < c; i++) {
-  for (let j = 0; j < input[i].length; j++) {
-    if (!input[i][j][0]) break;
-    console.log(Math.round(input[i][j][0] / 20))
+for (let i = 1; i < 2; i++) {
+  let grid = [];
+
+  for (let j = 0; j < 50; j++) {
+    grid.push(Array(50).fill("."));
   }
+  for (let j = 0; j < input[0].length; j++) {
+    let x = input[i][j][0];
+    let y = input[i][j][1];
+    // console.log(typeof x);
+    // console.log(`x: ${x} y: ${y}`);
+    grid[x][y] = "B";
+    // console.log(grid[x][y]);
+    // console.log(grid);
+  }
+  grid = grid.map((a) => a.join(""));
+  console.log(grid);
 }

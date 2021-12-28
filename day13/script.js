@@ -1,15 +1,12 @@
 // Advent Of Code 2021 - Day 13: Part 1
 const fs = require("fs");
 
-// import my puzzle input and format it into an array of numbers
-const input = fs.readFileSync("./input.txt", "latin1").split(/\n/g);
-
+const input = fs.readFileSync("./sample.txt", "latin1").split(/\n/g);
 const dots = input.filter((a) => parseInt(a) > -1).map((b) => b.split(","));
 const folds = input.filter((a) => a.includes("fold"));
 const fold1 = folds[0];
 
 const paper = [];
-
 let maxX = 0;
 let maxY = 0;
 
@@ -62,8 +59,6 @@ const foldX = (foldLine) => {
   }
 };
 
-const d = folds.length;
-// for (let i = 0; i < folds.length; i++) {
 for (let i = 0; i < 1; i++) {
   const foldLine = parseInt(folds[i].split("=")[1]);
   if (folds[i].includes("x")) {
@@ -74,11 +69,10 @@ for (let i = 0; i < 1; i++) {
 }
 
 let count = 0;
-
 for (let i = 0; i < paper.length; i++) {
   for (let j = 0; j < paper[0].length; j++) {
     if (paper[i][j] === "#") count++;
   }
 }
-console.log(paper);
+
 console.log(count);
