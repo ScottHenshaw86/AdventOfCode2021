@@ -8,7 +8,7 @@ const input = fs
   .map((a) => a.split("")) // maybe not necessary
   .map((a) => a.map(Number));
 
-console.log(input);
+// console.log(input);
 //    j -->
 // i
 // |
@@ -53,4 +53,4 @@ const checkNeighbors = (i, j, count) => {
 
 checkNeighbors(0, 0, 0);
 
-console.log(bestPathRisk);
+// console.log(bestPathRisk);
