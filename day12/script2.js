@@ -43,6 +43,7 @@ const findNext = (current, paths) => {
       newPaths.push(current);
       findNext(a, newPaths);
     }
+    // console.log(newPaths)
   }
 }
 
