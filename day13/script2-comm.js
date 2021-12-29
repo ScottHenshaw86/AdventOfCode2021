@@ -6,7 +6,6 @@ const input = fs.readFileSync("./input.txt", "latin1").split(/\n/g);
 
 const dots = input.filter((a) => parseInt(a) > -1).map((b) => b.split(","));
 const folds = input.filter((a) => a.includes("fold"));
-const fold1 = folds[0];
 
 const paper = [];
 

@@ -30,8 +30,6 @@ const folds = input.filter((a) => a.includes("fold"));
 // console.log(folds);
 // [ 'fold along y=7', 'fold along x=5' ]
 
-const fold1 = folds[0]; // for part 1, only interested in the 1st fold
-
 const paper = []; // this will be my paper grid
 
 let maxX = 0; // will be used to store the horizontal size of the paper
@@ -107,14 +105,6 @@ for (let i = 0; i < 1; i++) {
   }
 }
 
-let count = 0;
-
-// count all of the dots remaining on the paper
-for (let i = 0; i < paper.length; i++) {
-  for (let j = 0; j < paper[0].length; j++) {
-    if (paper[i][j] === "#") count++;
-  }
-}
-
-// console.log(paper);
-console.log(count);
+// flatten the paper array and reduce to get the total number of dots
+const numDots = paper.flat().reduce((a, b) => (b === "#" ? a + 1 : a), 0);
+console.log(numDots);

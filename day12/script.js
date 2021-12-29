@@ -2,38 +2,37 @@
 const fs = require("fs");
 
 const input = fs
-  .readFileSync("./sample.txt", "latin1")
+  .readFileSync("./input.txt", "latin1")
   .split(/\n/g)
   .map((a) => a.split("-"));
 
-let count = 0;
+let numPaths = 0;
+
 const findNext = (current, paths) => {
   for (let i = 0; i < input.length; i++) {
-    const newPaths = [...paths];
     let a = input[i][0];
     let b = input[i][1];
+    if (a !== current && b !== current) continue;
     if (a === a.toLowerCase() && paths.includes(a)) continue;
     if (b === b.toLowerCase() && paths.includes(b)) continue;
-    if (a === current) {
-      if (b === "end") {
-        count++;
-        newPaths.push("end");
-        continue;
-      }
-      newPaths.push(current);
-      findNext(b, newPaths);
+
+    const pathsCopy = [...paths];
+
+    if (a === "end" || b === "end") {
+      numPaths++;
+      pathsCopy.push("end");
+      continue;
     }
-    if (b === current) {
-      if (a === "end") {
-        count++;
-        newPaths.push("end");
-        continue;
-      }
-      newPaths.push(current);
-      findNext(a, newPaths);
+    pathsCopy.push(current);
+
+    if (a === current) {
+      findNext(b, pathsCopy);
+    } else {
+      findNext(a, pathsCopy);
     }
   }
 };
 
 findNext("start", []);
-console.log(count);
+
+console.log(`ANSWER: ${numPaths}`);

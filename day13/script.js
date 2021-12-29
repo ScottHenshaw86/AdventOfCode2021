@@ -4,7 +4,6 @@ const fs = require("fs");
 const input = fs.readFileSync("./sample.txt", "latin1").split(/\n/g);
 const dots = input.filter((a) => parseInt(a) > -1).map((b) => b.split(","));
 const folds = input.filter((a) => a.includes("fold"));
-const fold1 = folds[0];
 
 const paper = [];
 let maxX = 0;
@@ -68,11 +67,5 @@ for (let i = 0; i < 1; i++) {
   }
 }
 
-let count = 0;
-for (let i = 0; i < paper.length; i++) {
-  for (let j = 0; j < paper[0].length; j++) {
-    if (paper[i][j] === "#") count++;
-  }
-}
-
-console.log(count);
+const numDots = paper.flat().reduce((a, b) => (b === "#" ? a + 1 : a), 0);
+console.log(numDots);

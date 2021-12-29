@@ -6,7 +6,7 @@ const input = fs
   .split(/\n/g)
   .map((a) => a.split("-"));
 
-let count = 0;
+let numPaths = 0;
 const findNext = (current, paths) => {
   if (current === "start" && paths.includes(current)) return;
   if (current === current.toLowerCase() && paths.includes(current)) {
@@ -18,26 +18,21 @@ const findNext = (current, paths) => {
   }
 
   for (let i = 0; i < input.length; i++) {
-    const newPaths = [...paths];
     let a = input[i][0];
     let b = input[i][1];
-    if (a === current) {
-      if (b === "end") {
-        count++;
-        newPaths.push("end");
-        continue;
-      }
-      newPaths.push(current);
-      findNext(b, newPaths);
+    if (a !== current && b !== current) continue;
+    const pathsCopy = [...paths];
+    if (a === "end" || b === "end") {
+      numPaths++;
+      pathsCopy.push("end");
+      continue;
     }
-    if (b === current) {
-      if (a === "end") {
-        count++;
-        newPaths.push("end");
-        continue;
-      }
-      newPaths.push(current);
-      findNext(a, newPaths);
+    pathsCopy.push(current);
+
+    if (a === current) {
+      findNext(b, pathsCopy);
+    } else {
+      findNext(a, pathsCopy);
     }
     // console.log(newPaths)
   }
@@ -45,4 +40,4 @@ const findNext = (current, paths) => {
 
 findNext("start", []);
 
-console.log(count);
+console.log(`ANSWER: ${numPaths}`);

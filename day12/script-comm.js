@@ -19,48 +19,45 @@ const input = fs
 // ]
 
 // track the number of paths found
-let count = 0;
+let numPaths = 0;
 
 // recursive function to check paths that connect to the current room
 // accepts the current room and an array of visited rooms
 const findNext = (current, paths) => {
   for (let i = 0; i < input.length; i++) {
-    // loop through the list of connected rooms
-    const newPaths = [...paths]; // copy the visited rooms array
     let a = input[i][0];
     let b = input[i][1];
+
+    // if neither room is the one I'm looking for, move on
+    if (a !== current && b !== current) continue;
 
     // check if a room is lowercase.
     // if it is lowercase and I've already visited it, I can't visit it again
     if (a === a.toLowerCase() && paths.includes(a)) continue;
     if (b === b.toLowerCase() && paths.includes(b)) continue;
 
-    // if the 1st element is the room I'm currently in...
-    if (a === current) {
-      if (b === "end") {
-        // if my current room connected to "end", this path is complete
-        count++; // so increment my counter
-        newPaths.push("end");
-        continue;
-      }
-      newPaths.push(current); // if the next room is not "end", I will add it to my array of visited rooms
-      findNext(b, newPaths); // then call my function again to check rooms connected to this new room
+    const pathsCopy = [...paths]; // copy the visited rooms array
+
+    // if the connected room is "end", the path is complete.
+    // so increment numPathser
+    if (a === "end" || b === "end") {
+      numPaths++;
+      pathsCopy.push("end");
+      continue;
     }
 
-    // Lines 40-48 are same as above, but if the 2nd element is the room I'm currently in
-    if (b === current) {
-      if (a === "end") {
-        count++;
-        newPaths.push("end");
-        continue;
-      }
-      newPaths.push(current);
-      findNext(a, newPaths);
+    // not at the end yet. Add the current room to the path copy.
+    pathsCopy.push(current);
+
+    // call findNext with the room connected to the current room
+    if (a === current) {
+      findNext(b, pathsCopy);
+    } else {
+      findNext(a, pathsCopy);
     }
-    // console.log(newPaths);
   }
 };
 
 findNext("start", []);
 
-console.log(count);
+console.log(`ANSWER: ${numPaths}`);
