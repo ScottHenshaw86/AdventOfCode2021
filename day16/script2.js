@@ -2,14 +2,10 @@
 
 const fs = require("fs");
 
-// let binary = fs.readFileSync("./input.txt", "latin1");
+let binary = fs.readFileSync("./input.txt", "latin1");
 
-let binary = "C200B40A82";
-//110 000 1 00000000010 110 100 00001 010 100 00010
 
-// let binary = "38006F45291200";
-
-//123 456 7 89012345678 90
+// let binary = "C200B40A82";
 // let binary = '04005AC33890'
 // let binary = '880086C3E88112'
 // let binary = 'CE00C43D881120'
@@ -17,6 +13,7 @@ let binary = "C200B40A82";
 // let binary = 'F600BC2D8F'
 // let binary = '9C005AC2F8F0'
 // let binary = '9C0141080250320F1802104A08'
+// let binary = '32F5DF3B128'
 
 const binaryMap = {
   0: "0000",
@@ -44,32 +41,35 @@ arr.forEach((a) => {
   binary = binary.replace(regex, binaryMap[a]);
 });
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//          Started over from scratch.
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+binary = `${binary}0`;
+console.log(binary)
 
 const stack = [];
 
 const actions = ["+", "*", ",", ",", "literal", ">", "<", "=="];
 
 let string = "";
-let bitCount = 0;
-let packetCount = 0;
 
 const c = binary.length;
 for (let i = 0; i < c; i++) {
-  // TODO: need conditions to handle stack
-  // check if stack[stack.length - 1] is complete. if so, handle it. and reset count to 0
-  // if not, need to add to the count.
-  let current = stack[stack.length - 1];
-  console.log(current);
-  if (stack.length > 0) {
-    if (bitCount == current.length || packetCount == current.length) {
-      console.log("TRUE");
-      string = `${string})`;
-      count = 0;
+  let current;
+
+  let packetComplete = true;
+  while (packetComplete) {
+    current = stack[stack.length - 1];
+    if (stack.length > 0 && current.bitCount > 0) {
+      if (current.targetLength == current.bitCount || current.targetLength == current.subPackets) {
+        if (current.action === ">" || current.action === "<" || current.action === "==") {
+          string = `${string} ? 1 : 0)`;
+        } else {
+          string = `${string})`;
+        }
+        stack.pop()
+      } else {
+        packetComplete = false;
+      }
+    } else {
+      packetComplete = false;
     }
   }
 
@@ -79,48 +79,88 @@ for (let i = 0; i < c; i++) {
   const T = binary.substring(i + 3, i + 6);
 
   if (parseInt(T, 2) == 4) {
-    // this is a literal value
-    console.log("LITERAL");
+    /////////////////////////////
+    // this is a literal value //
+    /////////////////////////////
     let j = i + 6;
     let litValue = binary.substring(j + 1, j + 5);
+    console.log(litValue)
     while (binary[j] != 0) {
+      j += 5;
       litValue = `${litValue}${binary.substring(j + 1, j + 5)}`;
-      j += 4;
+      console.log(litValue)
     }
-    bitCount += j + 5 - i;
-    packetCount++;
+    // bitCount += j + 5 - i;
+    // packetCount++;
+    stack.forEach(a =>{ a.bitCount = a.bitCount + j + 5 - i})
+    current.subPackets++; // TODO: uncomment this
     i = j + 4;
-    console.log(litValue);
-    string = `${string}${current.action}${parseInt(litValue, 2)}`;
+    if (string[string.length - 1] === "(") {
+      string = `${string}${parseInt(litValue, 2)}`;
+    } else {
+      // TODO: uncmoment this
+      string = `${string}${current.action}${parseInt(litValue, 2)}`;
+      // string = `${string}${parseInt(litValue, 2)}`;
+    }
     continue;
   }
 
   // must be an operator packet
-  string = `${string}(`;
   const action = actions[parseInt(T, 2)];
   const I = binary[i + 6];
 
-  // console.log(binary.substring(i + 7, i + 18));
-  // console.log(binary.substring(i + 7, i + 22));
+  if (parseInt(T, 2) == 2) {
+    if (current.bitCount > 0) {
+      string = `${string}${current.action}Math.min(`;
+    } else {
+      string = `${string}Math.min(`;
+    }
+  } else if (parseInt(T, 2) == 3) {
+    if (current.bitCount > 0) {
+      string = `${string}${current.action}Math.max(`;
+    } else {
+      string = `${string}Math.max(`;
+    }
+  } else if (stack.length > 0 && current.bitCount > 0) {
+    string = `${string}${current.action}(`;
+  } else {
+    string = `${string}(`;
+  }
+
+  if (stack.length > 0) stack[stack.length - 1].subPackets += 1
   if (I == 1)
     stack.push({
-      length: parseInt(binary.substring(i + 7, i + 18), 2),
+      targetLength: parseInt(binary.substring(i + 7, i + 18), 2),
       action: action,
+      bitCount: 0,
+      subPackets: 0
     });
   if (I == 0)
     stack.push({
-      length: parseInt(binary.substring(i + 7, i + 22), 2),
+      targetLength: parseInt(binary.substring(i + 7, i + 22), 2),
       action: action,
+      bitCount: 0,
+      subPackets: 0
     });
 
+  let x = 0;
   if (I == 0) {
-    i += 21;
+    x = 21;
   } else {
-    i += 17;
+    x = 17;
   }
+  if (stack.length > 0) {
+    for (let j =0; j< stack.length - 1; j++) {
+      stack[j].bitCount += x + 1;
+    }
+  }
+  i += x;
 }
 
-// console.log(stack);
 console.log(string);
-console.log(bitCount);
-console.log(packetCount);
+console.log(eval(string));
+
+
+// 001 100  0111 0101 1011 1100 1101 0001 0101
+// 123 456  8901 3456 8901 3456 8901 3456 8901 
+// 000 000  0011 1111 1122 2222 2233 3333 3344
