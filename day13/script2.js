@@ -21,7 +21,7 @@ for (let i = 0; i < c; i++) {
 for (let y = 0; y < maxY + 1; y++) {
   paper.push([]);
   for (let x = 0; x < maxX + 1; x++) {
-    paper[y].push(".");
+    paper[y].push(" ");
   }
 }
 
@@ -69,4 +69,4 @@ for (let i = 0; i < folds.length; i++) {
   }
 }
 
-console.log(paper);
+console.log(paper.map((a) => a.join("")));
