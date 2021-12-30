@@ -3,7 +3,7 @@ const fs = require("fs");
 
 // import my puzzle input and format it into an array of numbers
 const input = fs
-  .readFileSync("./sample3.txt", "latin1")
+  .readFileSync("./input.txt", "latin1")
   .split("\n")
   .map((a) =>
     a.split(/[, ]/g).map((b) => {
@@ -13,71 +13,41 @@ const input = fs
     })
   );
 
-console.log(input);
-// [
-//   [ 'on', [ '10', '12' ], [ '10', '12' ], [ '10', '12' ] ],
-//   [ 'on', [ '11', '13' ], [ '11', '13' ], [ '11', '13' ] ],
-//   [ 'off', [ '9', '11' ], [ '9', '11' ], [ '9', '11' ] ],
-//   [ 'on', [ '10', '10' ], [ '10', '10' ], [ '10', '10' ] ]
-// ]
+input.splice(20); // only use first 20 elements for part 1
+// console.log(input);
 
-// const grid = [
-//   [
-//     ["x0y0z0", "x0y0z1", "x0y0z2"],
-//     ["x0y1z0", "x0y1z1", "x0y1z2"],
-//     ["x0y2z0", "x0y2z1", "x0y2z2"],
-//   ],
-//   [
-//     ["x1y0z0", "x1y0z1", "x1y0z2"],
-//     ["x1y1z0", "x1y1z1", "x1y1z2"],
-//     ["x1y2z0", "x1y2z1", "x1y2z2"],
-//   ],
-//   [
-//     ["x2y0z0", "x2y0z1", "x2y0z2"],
-//     ["x2y1z0", "x2y1z1", "x2y1z2"],
-//     ["x2y2z0", "x2y2z1", "x2y2z2"],
-//   ],
-// ];
-
-const grid = [];
-
-const initialize = (cuboid) => {
-  const action = cuboid[0];
-  const x1 = cuboid[1][0] + 150000; // add 150000 to get rid of negatives
-  const x2 = cuboid[1][1] + 150000; // by shifting everything 50 in all directions
-  const y1 = cuboid[2][0] + 150000;
-  const y2 = cuboid[2][1] + 150000;
-  const z1 = cuboid[3][0] + 150000;
-  const z2 = cuboid[3][1] + 150000;
-  // console.log(
-  //   `action: ${action}, x1: ${x1}, x2: ${x2}, y1: ${y1}, y2: ${y2}, z1: ${z1}, z2: ${z2}`
-  // );
-  for (let i = x1; i < x2 + 1; i++) {
-    if (!grid[i]) grid[i] = [];
-    for (let j = y1; j < y2 + 1; j++) {
-      if (!grid[i][j]) grid[i][j] = [];
-      for (let k = z1; k < z2 + 1; k++) {
-        grid[i][j][k] = action === "on" ? "O" : "X";
-      }
-    }
-  }
-};
+let total_volume = 0;
 
 const c = input.length;
 for (let i = 0; i < c; i++) {
-  console.log(`i: ${i}`);
-  initialize(input[i]);
-}
+  const x = input[i][1];
+  const y = input[i][2];
+  const z = input[i][3];
+  if (input[i][0] === "on") {
+    console.log(input[i])
+    let cuboid_volume = (x[1]-x[0]) * (y[1]-y[0]) * (z[1]-z[0])
 
-let count = 0;
-//count elements turned ON
-for (let i = 0; i < 300000 + 1; i++) {
-  for (let j = 0; j < 300000 + 1; j++) {
-    for (let k = 0; k < 300000 + 1; k++) {
-      if (grid[i]?.[j]?.[k] === "O") count++;
+    // check if future cuboids intersect this one
+    for (let j = i + 1; j < c; j++) {
+      const x2 = input[j][1];
+      const y2 = input[j][2];
+      const z2 = input[j][3];
+
+      if (x2[0] >= x[1] || x2[1] <= x[0]) continue;
+      if (y2[0] >= y[1] || y2[1] <= y[0]) continue;
+      if (z2[0] >= z[1] || z2[1] <= z[0]) continue;
+      // console.log('OVERLAP')
+      const overlap_point1 = [Math.max(x[0], x2[0]), Math.max(y[0], y2[0]), Math.max(z[0], z2[0])];
+      const overlap_point2 = [Math.min(x[1], x2[1]), Math.min(y[1], y2[1]), Math.min(z[1], z2[1])];
+      const minusVolume = (overlap_point2[0] - overlap_point1[0]) * (overlap_point2[1] - overlap_point1[1]) * (overlap_point2[2] - overlap_point1[2])
+      cuboid_volume -= minusVolume;
     }
+    total_volume = cuboid_volume > 0 ? total_volume + cuboid_volume : total_volume
+    console.log(`cuboid volume: ${cuboid_volume}`)
   }
 }
 
-// console.log(grid);
-console.log(count);
+console.log(total_volume)
+
+
+// ANSWER: 648681 -- part 1
