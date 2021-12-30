@@ -1,24 +1,5 @@
 // Advent Of Code 2021 - Day 21: Part 2
-const fs = require("fs");
 const start = performance.now();
-
-// Sample
-const player1 = {
-  pos: 4,
-  score: 0,
-};
-
-const player2 = {
-  pos: 8,
-  score: 0,
-};
-
-const state = {
-  p1_score: 0,
-  p1_pos: 4,
-  p2_score: 0,
-  ps_pos: 8,
-};
 
 const board = [0,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9]
 
@@ -62,8 +43,8 @@ const playGame = (p1_score, p1_pos, p2_score, p2_pos, turn, multiplier) => {
 // playGame(0, 4, -8, 8, "p1", 1); SAMPLE
 playGame(0, 10, -4, 4, "p1", 1); // my Input
 
-console.log(`p1Wins: ${p1Wins}`)
-console.log(`p2Wins: ${p2Wins}`)
+console.log(`p1Wins: ${p1Wins}`) // 190,897,246,590,017
+console.log(`p2Wins: ${p2Wins}`) // 90,710,140,491,134
 
 const end = performance.now();
 
