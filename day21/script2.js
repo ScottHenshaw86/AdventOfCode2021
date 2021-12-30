@@ -1,10 +1,22 @@
-// Advent Of Code 2021 - Day #: Part 2
+// Advent Of Code 2021 - Day 21: Part 2
 const fs = require("fs");
 
-// import my puzzle input and format it into an array of numbers
-const input = fs
-  .readFileSync("./input.txt", "latin1")
-  .split(/[(\r\n)(,)]/g)
-  .map(Number); // maybe not necessary
+Sample;
+const player1 = {
+  pos: 4,
+  score: 0,
+};
 
-// console.log(answer);
+const player2 = {
+  pos: 8,
+  score: 0,
+};
+
+const state = {
+  p1_score: 0,
+  p1_pos: 4,
+  p2_score: 0,
+  ps_pos: 8,
+};
+
+const playGame = (state) => {};
