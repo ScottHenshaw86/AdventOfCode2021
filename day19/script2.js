@@ -61,3 +61,9 @@ for (let i = 0; i < d; i++) {
 }
 
 console.log(totalBeacons);
+
+// IDEA:
+// Get list of total beacons, and the scanner(s) that can see them.
+// Get list of overlapping beacons
+// Use overlapping beacons to figure out the offsets needed for the unique beacons
+// so that I can know everythings position based on Scanner 0.
