@@ -4,8 +4,8 @@ const fs = require("fs");
 // import my puzzle input and format it into an array of numbers
 const input = fs
   .readFileSync("./sample.txt", "latin1")
-  .split(/--- scanner [0-9] ---\n/g)
-  .map((a) => a.split("\n"))
+  .split(/--- scanner [0-9] ---\r\n/g)
+  .map((a) => a.split("\r\n"))
   .map((b) => b.filter((d) => d !== ""))
   .map((c) => c.map((d) => d.split(",")));
 
@@ -47,23 +47,34 @@ for (let i = 0; i < c; i++) {
 
 diffs = diffs.flat();
 
+flatInput = input.flat()
+
+const scanners = [];
+
+for (let i=0; i<c; i++) {
+  for (let j=0; j<input[i].length; j++) {
+    scanners.push(i)
+  }
+}
+
+// console.log(scanners)
+
 const d = diffs.length;
-console.log(d);
 for (let i = 0; i < d; i++) {
-  console.log(`i: ${i}`);
+  // console.log(`i: ${i}`);
   for (let j = i + 1; j < d; j++) {
     let overlaps = 0;
     diffs[i].forEach((a) => {
       if (diffs[j].indexOf(a) > -1) overlaps++;
     });
-    if (overlaps > 10) totalBeacons--;
+    if (overlaps > 10) {
+      totalBeacons--;
+      console.log(`scanner[${scanners[i]}] -- ${flatInput[i]}  ===  scanner[${scanners[j]}]  --  ${flatInput[j]}
+      `)
+      // console.log(`flatInput[${i}]: ${flatInput[i]}`)
+      // console.log(`flatInput[${j}]: ${flatInput[j]}`)
+    };
   }
 }
 
 console.log(totalBeacons);
-
-// IDEA:
-// Get list of total beacons, and the scanner(s) that can see them.
-// Get list of overlapping beacons
-// Use overlapping beacons to figure out the offsets needed for the unique beacons
-// so that I can know everythings position based on Scanner 0.
