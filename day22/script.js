@@ -3,7 +3,7 @@ const fs = require("fs");
 
 // import my puzzle input and format it into an array of numbers
 const input = fs
-  .readFileSync("./input.txt", "latin1")
+  .readFileSync("./sample1.txt", "latin1")
   .split("\n")
   .map((a) =>
     a.split(/[, ]/g).map((b) => {
@@ -13,7 +13,7 @@ const input = fs
     })
   );
 
-input.splice(20); // only use first 20 elements for part 1
+input.splice(1); // only use first 20 elements for part 1
 // console.log(input);
 // [
 //   [ 'on', [ '10', '12' ], [ '10', '12' ], [ '10', '12' ] ],
