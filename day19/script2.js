@@ -3,9 +3,9 @@ const fs = require("fs");
 
 // import my puzzle input and format it into an array of numbers
 const input = fs
-  .readFileSync("./sample.txt", "latin1")
-  .split(/--- scanner [0-9] ---\n/g)
-  .map((a) => a.split("\n"))
+  .readFileSync("./input.txt", "latin1")
+  .split(/--- scanner [0-9][0-9]? ---\r\n/g)
+  .map((a) => a.split("\r\n"))
   .map((b) => b.filter((d) => d !== ""))
   .map((c) => c.map((d) => d.split(",")));
 
@@ -23,14 +23,16 @@ for (let i = 0; i < c; i++) {
     for (let k = 0; k < input[i].length; k++) {
       // loop through rest of beacons
       if (j === k) continue; // don't need distance from self
-      const x = Math.abs(input[i][j][0] - input[i][k][0]);
-      const y = Math.abs(input[i][j][1] - input[i][k][1]);
-      const z = Math.abs(input[i][j][2] - input[i][k][2]);
-      let totalDiff = x * y * z;
+      const x = input[i][j][0] - input[i][k][0];
+      const y = input[i][j][1] - input[i][k][1];
+      const z = input[i][j][2] - input[i][k][2];
+      let totalDiff = [Math.abs(x), Math.abs(y), Math.abs(z)].sort((a, b) => a - b).join(",");
       diffs[i][j].push(totalDiff);
     }
   }
 }
+
+const uselessVariable = 99999999999;
 
 diffs = diffs.flat();
 
@@ -44,11 +46,10 @@ for (let i = 0; i < c; i++) {
   }
 }
 
-console.log(scanners);
-
 const numScanners = new Set(scanners).size;
 
 const overlappingBeacons = {};
+const alreadyKey = []
 
 const d = diffs.length;
 for (let i = 0; i < d; i++) {
@@ -58,6 +59,8 @@ for (let i = 0; i < d; i++) {
       if (diffs[j].indexOf(a) > -1) overlaps++;
     });
     if (overlaps > 10) {
+
+
       if (!overlappingBeacons[scanners[i]]) {
         overlappingBeacons[scanners[i]] = {};
       }
@@ -65,281 +68,203 @@ for (let i = 0; i < d; i++) {
         overlappingBeacons[scanners[i]][scanners[j]] = [];
       }
       overlappingBeacons[scanners[i]][scanners[j]].push(i, j);
+
+      if (!overlappingBeacons[scanners[j]]) {
+        overlappingBeacons[scanners[j]] = {};
+      }
+      if (!overlappingBeacons[scanners[j]][scanners[i]]) {
+        overlappingBeacons[scanners[j]][scanners[i]] = [];
+      }
+      overlappingBeacons[scanners[j]][scanners[i]].push(j, i);
+
     }
   }
 }
 
-const completed = [];
+const completed = [0];
 
-const scannerPositions = [[0, 0]];
+const scannerPositions = [[0, 0, 0]];
+
+const getRotation = (x, y, z, x2, y2, z2) => {
+  const string = `${x},${y},${z}`;
+  // console.log(string)
+  // console.log(`${x2},${y2},${z2}`)
+
+  if (`${x2},${y2},${z2}` === string) return [0, 1, 2, 1, 1, 1];
+  if (`${x2},${y2},${-1 * z2}` === string) return [0, 1, 2, 1, 1, -1];
+  if (`${x2},${-1 * y2},${z2}` === string) return [0, 1, 2, 1, -1, 1];
+  if (`${x2},${-1 * y2},${-1 * z2}` === string) return [0, 1, 2, 1, -1, -1];
+  if (`${-1 * x2},${y2},${z2}` === string) return [0, 1, 2, -1, 1, 1];
+  if (`${-1 * x2},${y2},${-1 * z2}` === string) return [0, 1, 2, -1, 1, -1];
+  if (`${-1 * x2},${-1 * y2},${z2}` === string) return [0, 1, 2, -1, -1, 1];
+  if (`${-1 * x2},${-1 * y2},${-1 * z2}` === string) return [0, 1, 2, -1, -1, -1];
+
+  if (`${x2},${z2},${y2}` === string) return [0, 2, 1, 1, 1, 1];
+  if (`${x2},${z2},${-1 * y2}` === string) return [0, 2, 1, 1, 1, -1];
+  if (`${x2},${-1 * z2},${y2}` === string) return [0, 2, 1, 1, -1, 1];
+  if (`${x2},${-1 * z2},${-1 * y2}` === string) return [0, 2, 1, 1, -1, -1];
+  if (`${-1 * x2},${z2},${y2}` === string) return [0, 2, 1, -1, 1, 1];
+  if (`${-1 * x2},${z2},${-1 * y2}` === string) return [0, 2, 1, -1, 1, -1];
+  if (`${-1 * x2},${-1 * z2},${y2}` === string) return [0, 2, 1, -1, -1, 1];
+  if (`${-1 * x2},${-1 * z2},${-1 * y2}` === string) return [0, 2, 1, -1, -1, -1];
+
+  if (`${y2},${x2},${z2}` === string) return [1, 0, 2, 1, 1, 1];
+  if (`${y2},${x2},${-1 * z2}` === string) return [1, 0, 2, 1, 1, -1];
+  if (`${y2},${-1 * x2},${z2}` === string) return [1, 0, 2, 1, -1, 1];
+  if (`${y2},${-1 * x2},${-1 * z2}` === string) return [1, 0, 2, 1, -1, -1];
+  if (`${-1 * y2},${x2},${z2}` === string) return [1, 0, 2, -1, 1, 1];
+  if (`${-1 * y2},${x2},${-1 * z2}` === string) return [1, 0, 2, -1, 1, -1];
+  if (`${-1 * y2},${-1 * x2},${z2}` === string) return [1, 0, 2, -1, -1, 1];
+  if (`${-1 * y2},${-1 * x2},${-1 * z2}` === string) return [1, 0, 2, -1, -1, -1];
+
+  if (`${y2},${z2},${x2}` === string) return [1, 2, 0, 1, 1, 1];
+  if (`${y2},${z2},${-1 * x2}` === string) return [1, 2, 0, 1, 1, -1];
+  if (`${y2},${-1 * z2},${x2}` === string) return [1, 2, 0, 1, -1, 1];
+  if (`${y2},${-1 * z2},${-1 * x2}` === string) return [1, 2, 0, 1, -1, -1];
+  if (`${-1 * y2},${z2},${x2}` === string) return [1, 2, 0, -1, 1, 1];
+  if (`${-1 * y2},${z2},${-1 * x2}` === string) return [1, 2, 0, -1, 1, -1];
+  if (`${-1 * y2},${-1 * z2},${x2}` === string) return [1, 2, 0, -1, -1, 1];
+  if (`${-1 * y2},${-1 * z2},${-1 * x2}` === string) return [1, 2, 0, -1, -1, -1];
+
+  if (`${z2},${x2},${y2}` === string) return [2, 0, 1, 1, 1, 1];
+  if (`${z2},${x2},${-1 * y2}` === string) return [2, 0, 1, 1, 1, -1];
+  if (`${z2},${-1 * x2},${y2}` === string) return [2, 0, 1, 1, -1, 1];
+  if (`${z2},${-1 * x2},${-1 * y2}` === string) return [2, 0, 1, 1, -1, -1];
+  if (`${-1 * z2},${x2},${y2}` === string) return [2, 0, 1, -1, 1, 1];
+  if (`${-1 * z2},${x2},${-1 * y2}` === string) return [2, 0, 1, -1, 1, -1];
+  if (`${-1 * z2},${-1 * x2},${y2}` === string) return [2, 0, 1, -1, -1, 1];
+  if (`${-1 * z2},${-1 * x2},${-1 * y2}` === string) return [2, 0, 1, -1, -1, -1];
+
+  if (`${z2},${y2},${x2}` === string) return [2, 1, 0, 1, 1, 1];
+  if (`${z2},${y2},${-1 * x2}` === string) return [2, 1, 0, 1, 1, -1];
+  if (`${z2},${-1 * y2},${x2}` === string) return [2, 1, 0, 1, -1, 1];
+  if (`${z2},${-1 * y2},${-1 * x2}` === string) return [2, 1, 0, 1, -1, -1];
+  if (`${-1 * z2},${y2},${x2}` === string) return [2, 1, 0, -1, 1, 1];
+  if (`${-1 * z2},${y2},${-1 * x2}` === string) return [2, 1, 0, -1, 1, -1];
+  if (`${-1 * z2},${-1 * y2},${x2}` === string) return [2, 1, 0, -1, -1, 1];
+  if (`${-1 * z2},${-1 * y2},${-1 * x2}` === string) return [2, 1, 0, -1, -1, -1];
+}
 
 const rotateAndOffset = (scanner) => {
+  // console.log(`SCANNER SCANNER: ${scanner}`)
   const numCompleted = new Set(completed).size;
   if (numCompleted === numScanners) {
-    console.log("====== !FINISHED! ======");
+    // console.log("====== !FINISHED! ======");
     return;
   } // finished!
 
-  if (completed.indexOf(scanner) > -1) {
-    console.log("This scanner is already completed");
-    return;
-  }
+  if (!completed.includes(parseInt(scanner))) {
+    console.log('this scanner has not been processed yet.')
+    return
+  };
 
-  if (!overlappingBeacons[scanner]) {
-    console.log("Scanner does not exist as a key");
-    return;
-  }
+  for (let overlapScanner in overlappingBeacons[scanner]) {
 
-  for (overlapScanner in overlappingBeacons[scanner]) {
+    if (completed.includes(parseInt(overlapScanner))) {
+      console.log('this overlapScanner has ALREADY been processed');
+      continue;
+    }
+
+    // console.log(`scanner: ${scanner}`)
+    // console.log(`overlapScanner: ${overlapScanner}`)
     const beacons = overlappingBeacons[scanner][overlapScanner];
+
     //   console.log(beacons)
     //   [
     //     0, 28,  1, 33,  3, 37,  4, 26,
     //     5, 49,  6, 43,  7, 35,  9, 25,
     //    12, 27, 14, 30, 19, 40, 24, 44
     //  ]
+    let s1b1, s1b2, s2b1, s2b2, start, end;
 
-    const s1b1 = flatInput[beacons[0]].map(Number);
-    const s2b1 = flatInput[beacons[1]].map(Number);
-    const s1b2 = flatInput[beacons[2]].map(Number);
-    const s2b2 = flatInput[beacons[3]].map(Number);
+      s1b1 = flatInput[beacons[0]].map(Number);
+      s1b2 = flatInput[beacons[2]].map(Number);
+      s2b1 = flatInput[beacons[1]].map(Number);
+      s2b2 = flatInput[beacons[3]].map(Number);
 
-    let offsetX,
-      offsetY,
-      offsetZ,
-      flipX,
-      flipY,
-      flipZ,
-      xx = false,
-      xy = false,
-      xz = false,
-      yx = false,
-      yy = false,
-      yz = false,
-      zx = false,
-      zy = false,
-      zz = false;
+      start = scanners.indexOf(parseInt(overlapScanner));
+      end = scanners.lastIndexOf(parseInt(overlapScanner));
 
-    // rotation x
-    // s1 x axis is s2 x axis
-    if (
-      Math.abs(s2b1[0] + (s1b1[0] - s2b1[0])) === Math.abs(s1b1[0]) &&
-      Math.abs(s2b2[0] + (s1b2[0] - s2b2[0])) === Math.abs(s1b2[0])
-    ) {
-      if (s1b1[0] - s2b1[0] === s1b2[0] - s2b2[0]) {
-        offsetX = s1b1[0] - s2b1[0];
-        xx = true;
-      }
-      if (s1b1[0] + s2b1[0] === s1b2[0] + s2b2[0]) {
-        offsetX = s1b1[0] + s2b1[0];
-        xx = true;
-      }
-      if (s2b1[0] + offsetX === s1b1[0]) {
-        flipX = false;
-      } else if (-s2b1[0] + offsetX === s1b1[0]) {
-        flipX = true;
-      }
-    }
+      completed.push(parseInt(overlapScanner));
 
-    // rotation x
-    // s1 x axis is s2 y axis
-    if (
-      Math.abs(s2b1[1] + (s1b1[0] - s2b1[1])) === Math.abs(s1b1[0]) &&
-      Math.abs(s2b2[1] + (s1b2[0] - s2b2[1])) === Math.abs(s1b2[0])
-    ) {
-      if (s1b1[0] - s2b1[1] === s1b2[0] - s2b2[1]) {
-        offsetY = s1b1[0] - s2b1[1];
-        xy = true;
-      }
-      if (s1b1[0] + s2b1[1] === s1b2[0] + s2b2[1]) {
-        offsetY = s1b1[0] + s2b1[1];
-        xy = true;
-      }
-      if (s2b1[1] + offsetY === s1b1[0]) {
-        flipY = false;
-      } else if (-s2b1[1] + offsetY === s1b1[0]) {
-        flipY = true;
-      }
-    }
+    x = s1b1[0] - s1b2[0];
+    y = s1b1[1] - s1b2[1];
+    z = s1b1[2] - s1b2[2];
 
-    // rotation x
-    // s1 x axis is s2 z axis
-    if (
-      Math.abs(s2b1[2] + (s1b1[0] - s2b1[2])) === Math.abs(s1b1[0]) &&
-      Math.abs(s2b2[2] + (s1b2[0] - s2b2[2])) === Math.abs(s1b2[0])
-    ) {
-      if (s1b1[0] - s2b1[2] === s1b2[0] - s2b2[2]) {
-        offsetZ = s1b1[0] - s2b1[2];
-        xz = true;
-      }
-      if (s1b1[0] + s2b1[2] === s1b2[0] + s2b2[1]) {
-        offsetZ = s1b1[0] + s2b1[2];
-        xz = true;
-      }
-      if (s2b1[2] + offsetZ === s1b1[0]) {
-        flipZ = false;
-      } else if (-s2b1[2] + offsetZ === s1b1[0]) {
-        flipZ = true;
-      }
-    }
+    x2 = s2b1[0] - s2b2[0];
+    y2 = s2b1[1] - s2b2[1];
+    z2 = s2b1[2] - s2b2[2];
 
-    // rotation y
-    // s1 y axis is s2 y axis
-    if (
-      Math.abs(s2b1[1] + (s1b1[1] - s2b1[1])) === Math.abs(s1b1[1]) &&
-      Math.abs(s2b2[1] + (s1b2[1] - s2b2[1])) === Math.abs(s1b2[1])
-    ) {
-      if (s1b1[1] - s2b1[1] === s1b2[1] - s2b2[1]) {
-        offsetY = s1b1[1] - s2b1[1];
-        yy = true;
-      }
-      if (s1b1[1] + s2b1[1] === s1b2[1] + s2b2[1]) {
-        offsetY = s1b1[1] + s2b1[1];
-        yy = true;
-      }
-      if (s2b1[1] + offsetY === s1b1[1]) {
-        flipY = false;
-      } else if (-s2b1[1] + offsetY === s1b1[1]) {
-        flipY = true;
-      }
-    }
+    const rotation = getRotation(x, y, z, x2, y2, z2)
 
-    // rotation y
-    // s1 y axis is s2 x axis
-    if (
-      Math.abs(s2b1[0] + (s1b1[1] - s2b1[0])) === Math.abs(s1b1[1]) &&
-      Math.abs(s2b2[0] + (s1b2[1] - s2b2[0])) === Math.abs(s1b2[1])
-    ) {
-      if (s1b1[1] - s2b1[0] === s1b2[1] - s2b2[0]) {
-        offsetX = s1b1[1] - s2b1[0];
-        yx = true;
-      }
-      if (s1b1[1] + s2b1[0] === s1b2[1] + s2b2[0]) {
-        offsetX = s1b1[1] + s2b1[0];
-        yx = true;
-      }
-      if (s2b1[0] + offsetX === s1b1[1]) {
-        flipX = false;
-      } else if (-s2b1[0] + offsetX === s1b1[1]) {
-        flipX = true;
-      }
-    }
+    // console.log(`rotation: ${rotation}`)
 
-    // rotation y
-    // s1 y axis is s2 z axis
-    if (
-      Math.abs(s2b1[2] + (s1b1[1] - s2b1[2])) === Math.abs(s1b1[1]) &&
-      Math.abs(s2b2[2] + (s1b2[1] - s2b2[2])) === Math.abs(s1b2[1])
-    ) {
-      if (s1b1[1] - s2b1[2] === s1b2[1] - s2b2[2]) {
-        offsetZ = s1b1[1] - s2b1[2];
-        yz = true;
-      }
-      if (s1b1[1] + s2b1[2] === s1b2[1] + s2b2[2]) {
-        offsetZ = s1b1[1] + s2b1[2];
-        yz = true;
-      }
-      if (s2b1[2] + offsetZ === s1b1[1]) {
-        flipZ = false;
-      } else if (-s2b1[2] + offsetZ === s1b1[1]) {
-        flipZ = true;
-      }
-    }
+    const offsetX = s1b1[0] - rotation[3] * s2b1[rotation[0]];
+    const offsetY = s1b1[1] - rotation[4] * s2b1[rotation[1]];
+    const offsetZ = s1b1[2] - rotation[5] * s2b1[rotation[2]];
 
-    // rotation z
-    // s1 z axis is s2 z axis
-    if (
-      Math.abs(s2b1[2] + (s1b1[2] - s2b1[2])) === Math.abs(s1b1[2]) &&
-      Math.abs(s2b2[2] + (s1b2[2] - s2b2[2])) === Math.abs(s1b2[2])
-    ) {
-      if (s1b1[2] - s2b1[2] === s1b2[2] - s2b2[2]) {
-        offsetZ = s1b1[2] - s2b1[2];
-        zz = true;
-      }
-      if (s1b1[2] + s2b1[2] === s1b2[2] + s2b2[2]) {
-        offsetZ = s1b1[2] + s2b1[2];
-        zz = true;
-      }
-      if (s2b1[2] + offsetZ === s1b1[2]) {
-        flipZ = false;
-      } else if (-s2b1[2] + offsetZ === s1b1[2]) {
-        flipZ = true;
-      }
-    }
-
-    // rotation z
-    // s1 z axis is s2 x axis
-    if (
-      Math.abs(s2b1[0] + (s1b1[2] - s2b1[0])) === Math.abs(s1b1[2]) &&
-      Math.abs(s2b2[0] + (s1b2[2] - s2b2[0])) === Math.abs(s1b2[2])
-    ) {
-      if (s1b1[2] - s2b1[0] === s1b2[2] - s2b2[0]) {
-        offsetX = s1b1[2] - s2b1[0];
-        zx = true;
-      }
-      if (s1b1[2] + s2b1[0] === s1b2[2] + s2b2[0]) {
-        offsetX = s1b1[2] + s2b1[0];
-        zx = true;
-      }
-      if (s2b1[0] + offsetX === s1b1[2]) {
-        flipX = false;
-      } else if (-s2b1[0] + offsetX === s1b1[2]) {
-        flipX = true;
-      }
-    }
-
-    // rotation z
-    // s1 z axis is s2 y axis
-    if (
-      Math.abs(s2b1[1] + (s1b1[2] - s2b1[1])) === Math.abs(s1b1[2]) &&
-      Math.abs(s2b2[1] + (s1b2[2] - s2b2[1])) === Math.abs(s1b2[2])
-    ) {
-      if (s1b1[2] - s2b1[1] === s1b2[2] - s2b2[1]) {
-        offsetY = s1b1[2] - s2b1[1];
-        zy = true;
-        // console.log(`offsetY: ${offsetY}`);
-      }
-      if (s1b1[2] + s2b1[1] === s1b2[2] + s2b2[1]) {
-        offsetY = s1b1[2] + s2b1[1];
-        zy = true;
-        // console.log(`offsetY: ${offsetY}`);
-      }
-      if (s2b1[1] + offsetY === s1b1[2]) {
-        // console.log(" no flip Y");
-        flipY = "";
-      } else if (-s2b1[1] + offsetY === s1b1[2]) {
-        // console.log("flip Y");
-        flipY = "-";
-      }
-    }
-
-    console.log(`offsetX: ${offsetX}`);
-    console.log(`offsetY: ${offsetY}`);
-    console.log(`offsetZ: ${offsetZ}`);
+    // console.log(`overlapScanner: ${overlapScanner}`)
+    // console.log(`offsetX: ${offsetX}`);
+    // console.log(`offsetY: ${offsetY}`);
+    // console.log(`offsetZ: ${offsetZ}`);
 
     scannerPositions.push([offsetX, offsetY, offsetZ]);
 
     // offset Beacons
-    let start = scanners.indexOf(parseInt(overlapScanner));
-    let end = scanners.lastIndexOf(parseInt(overlapScanner));
 
-    // for (let i = start; i < end; i++) {
-    //   flatInput[i] = temp;
-    // }
 
-    completed.push(scanner);
+    for (let i = start; i < end; i++) {
+      const temp = [...flatInput[i]];
+      const newX = rotation[3] * temp[rotation[0]] + offsetX;
+      const newY = rotation[4] * temp[rotation[1]] + offsetY;
+      const newZ = rotation[5] * temp[rotation[2]] + offsetZ;
+      flatInput[i] = [newX, newY, newZ];
+    }
+    
     rotateAndOffset(overlapScanner);
   }
 };
 
-for (let i = 0; i < numScanners; i++) {
-  rotateAndOffset(i);
-}
+rotateAndOffset(0);
 
-console.log(scannerPositions);
+// console.log(overlappingBeacons);
+
+
+
+// const sortedFlatInput = flatInput.sort((a,b) => {
+//   return parseInt(a[0]) - parseInt(b[0])
+// })
+
+// console.log(flatInput)
 
 // console.log(flatInput);
 
+// console.log(completed)
+// console.log(scannerPositions);
+console.log(overlappingBeacons)
+
+let manhattan = 0;
+
+for (let i=0; i<scannerPositions.length; i++) {
+  for (let j=0; j< scannerPositions.length; j++) {
+    if (j === i) continue;
+    // console.log(scannerPositions[i])
+    // console.log(scannerPositions[j])
+
+    const x = Math.abs(scannerPositions[i][0] - scannerPositions[j][0])
+    const y = Math.abs(scannerPositions[i][1] - scannerPositions[j][1])
+    const z = Math.abs(scannerPositions[i][2] - scannerPositions[j][2])
+
+    const total = x + y + z;
+
+    if (total > manhattan) {
+      manhattan = total;
+    }
+
+  }
+}
+
+console.log(`MANHATTAN DISTANCE: ${manhattan}`)
 // GUESSES
 // 10,000   - too low
 // 30,000  - too high
